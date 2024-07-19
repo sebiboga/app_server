@@ -1,0 +1,32 @@
+name: run-docker
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Print Public IP
+      run: curl ifconfig.me
+
+    - name: Print Internal IPs
+      run: ip a
+
+    - name: Create Hello World Docker image
+      run: |
+        echo -e "FROM httpd:2.4\nCOPY ./index.html /usr/local/apache2/htdocs/" > Dockerfile
+        echo -e "<html>\n<head>\n<title>Hello, world!</title>\n</head>\n<body>\n<h1>Hello, world!</h1>\n</body>\n</html>" > index.html
+        docker build -t hello-world .
+
+    - name: Run Docker image
+      run: |
+        docker run -d --name hello-world -p 8080:80 hello-world
+        sleep 600
+        docker stop hello-world
