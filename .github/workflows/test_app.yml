@@ -27,6 +27,6 @@ jobs:
 
     - name: Run Docker image
       run: |
-        docker run -d --name hello-world -p 8080:80 hello-world
+        docker run -d --name hello-world -p 80:8983 solr:latest
         sleep 600
         docker stop hello-world
